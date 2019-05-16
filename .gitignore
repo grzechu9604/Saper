@@ -4,3 +4,6 @@
 
 *.suo
 /Saper/Saper/obj
+*.json
+*.dll
+*.pdb

@@ -26,14 +26,23 @@ let validate_mines_amount x y mines_amount =
 let random_number_generator min max =
     (new System.Random()).Next(min, max)
 
-let generate_board x y =
-    let _board : int[,] = Array2D.zeroCreate x y
-    _board
+let generate_board x y mines_amount =
+    let rec assign_mines mines_amount board =
+        if (mines_amount = 0) then 
+            board
+        else 
+            let rand_x = random_number_generator 0 (Array2D.length1 board - 1)
+            let rand_y = random_number_generator 0 (Array2D.length2 board - 1)
+    
+            if (board.[rand_x, rand_y] = 1) then
+                assign_mines mines_amount board
+            else
+                board.SetValue(1, rand_x, rand_y)
+                assign_mines (mines_amount - 1) board
+     in
+        let _board : int[,] = Array2D.zeroCreate x y
+        assign_mines mines_amount _board
 
-let assign_mines mines_amount board =
-        for r = 0 to Array2D.length1 board - 1 do
-            for c = 0 to Array2D.length2 board - 1 do
-                board.[r, c] := 1
 
 let print_table table =
     for r = 0 to Array2D.length1 table - 1 do
@@ -43,13 +52,9 @@ let print_table table =
 
 [<EntryPoint>]
 let main argv =
-    //let board = generate_board 5 6
-    //print_table board
-    //assign_mines 1 board
-    //print_table board
-    let x = get_int_in_range_from_input "wprowadź x" 0 10
-    let y = get_int_in_range_from_input "wprowadź y" 0 10
+    let game_variant = get_int_in_range_from_input "Wybierz wariant gry od 1 do 3" 1 3
+    let board = generate_board 8 8 16
 
-    printf "%A %A" x y
+    print_table board
 
     0 // return an integer exit code
