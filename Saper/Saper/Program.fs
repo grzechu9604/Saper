@@ -38,11 +38,11 @@ let calculate_mines_in_neighborhood_for_board board =
                 + is_it_mine board (x + 1) (y - 1) + is_it_mine board (x + 1) y + is_it_mine board (x + 1) (y + 1) 
             in
 
-            if (index = Array2D.length1 board * (Array2D.length2 board - 1)) then
+            if (index = Array2D.length1 board * Array2D.length2 board) then
                 board
             else
-                let x = index % (Array2D.length1 board - 1)
-                let y = index / (Array2D.length1 board - 1)
+                let x = index % (Array2D.length1 board)
+                let y = index / (Array2D.length1 board)
 
                 if (board.[x, y] <> -1) then
                     board.SetValue((calculate_mines_in_neighborhood board x y), x, y)
@@ -51,7 +51,7 @@ let calculate_mines_in_neighborhood_for_board board =
 
     in _calculate_mines_in_neighborhood_for_board board 0
  
-let generate_board x y mines_amount =
+let generate_board (x, y, mines_amount) =
     let rec assign_mines mines_amount board =
         if (mines_amount = 0) then 
             board
@@ -78,10 +78,16 @@ let print_table table =
                 printf "%A\t" table.[r, c]
         printfn ""
 
+let choose_game_variant =
+    let game_variants = [(8, 8, 16); (16, 16, 40); (30, 16, 99)]
+    let game_variant = get_int_in_range_from_input "Wybierz wariant gry od 1 do 3" 1 3
+    game_variants.Item(game_variant - 1)
+
 [<EntryPoint>]
 let main argv =
-    let game_variant = get_int_in_range_from_input "Wybierz wariant gry od 1 do 3" 1 3
-    let board = generate_board 8 8 16
+    
+    let variant = choose_game_variant
+    let board = generate_board variant
 
     print_table board
 
