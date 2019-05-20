@@ -95,12 +95,23 @@ let choose_game_variant =
     let game_variant = get_int_in_range_from_input "Wybierz wariant gry od 1 do 3" 1 3
     game_variants.Item(game_variant - 1)
 
-let guess board user_board x y =
-    if (Array2D.get user_board x y = closed_field_char) then
+let rec guess board user_board x y =
+    if (x >= 0 && x < Array2D.length1 board && y >= 0 && y < Array2D.length2 board 
+    && Array2D.get user_board x y = closed_field_char) then
         if (Array2D.get board x y = mine_field_value) then
             raise (System.Exception("MINA!!!"))
         else
             user_board.SetValue((char (Array2D.get board x y) + '0'), x, y)
+            if (Array2D.get board x y = 0) then
+                guess board user_board (x - 1) (y - 1)
+                guess board user_board (x - 1) y
+                guess board user_board (x - 1) (y + 1)
+                guess board user_board x (y - 1)
+                guess board user_board x (y + 1)
+                guess board user_board (x + 1) (y - 1)
+                guess board user_board (x + 1) y
+                guess board user_board (x + 1) (y + 1)
+
 
 let get_point_from_user max_x max_y =
     let x = get_int_in_range_from_input "wprowadź x" 0 max_x
@@ -115,14 +126,14 @@ let main argv =
     let board = generate_board variant
     let user_board = Array2D.create<char> (Array2D.length1 board) (Array2D.length2 board) closed_field_char
 
-    print_mines_table board
-    printfn "*\t"
+    //print_mines_table board
+    //printfn "*\t"
     print_user_table user_board
 
     while (true) do
         let point = get_point_from_user (Array2D.length1 board) (Array2D.length2 board)
         guess board user_board (fst point) (snd point)
-
+        Console.Clear()
         print_user_table user_board
 
 
