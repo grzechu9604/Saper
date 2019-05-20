@@ -126,14 +126,12 @@ let main argv =
     let board = generate_board variant
     let user_board = Array2D.create<char> (Array2D.length1 board) (Array2D.length2 board) closed_field_char
 
-    //print_mines_table board
-    //printfn "*\t"
     print_user_table user_board
 
     try
         while (true) do
-            Console.Clear()
             let point = get_point_from_user (Array2D.length1 board) (Array2D.length2 board)
+            Console.Clear()
             guess board user_board (fst point) (snd point)
             print_user_table user_board
     with
@@ -141,6 +139,4 @@ let main argv =
             Console.Clear()
             printfn "Przegrałeś! Wszedłeś na minę"
             print_mines_table board
-
-
     0
