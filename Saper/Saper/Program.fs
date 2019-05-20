@@ -130,11 +130,17 @@ let main argv =
     //printfn "*\t"
     print_user_table user_board
 
-    while (true) do
-        let point = get_point_from_user (Array2D.length1 board) (Array2D.length2 board)
-        guess board user_board (fst point) (snd point)
-        Console.Clear()
-        print_user_table user_board
+    try
+        while (true) do
+            Console.Clear()
+            let point = get_point_from_user (Array2D.length1 board) (Array2D.length2 board)
+            guess board user_board (fst point) (snd point)
+            print_user_table user_board
+    with
+        _ -> 
+            Console.Clear()
+            printfn "Przegrałeś! Wszedłeś na minę"
+            print_mines_table board
 
 
-    0 // return an integer exit code
+    0
