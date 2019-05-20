@@ -68,15 +68,24 @@ let generate_board (x, y, mines_amount) =
         let board = assign_mines mines_amount (Array2D.zeroCreate x y)
         calculate_mines_in_neighborhood_for_board board
 
-
-let print_table table =
-    for r = 0 to Array2D.length1 table - 1 do
-        for c = 0 to Array2D.length2 table - 1 do
-            if (table.[r, c] = -1) then 
-                printf "*\t"
-            else
-                printf "%A\t" table.[r, c]
+let print_table printing_func table =
+    for x = 0 to Array2D.length1 table - 1 do
+        for y = 0 to Array2D.length2 table - 1 do
+            printing_func table x y
         printfn ""
+
+let print_user_table table =
+    let user_board_printer board x y =  
+        printf "%O\t" (Array2D.get board x y) in
+    print_table user_board_printer table
+
+let print_mines_table table =
+    let mines_board_printer board x y =
+        if (Array2D.get board x y = -1) then 
+            printf "*\t"
+        else
+            printf "%A\t" (Array2D.get board x y) in
+    print_table mines_board_printer table
 
 let choose_game_variant =
     let game_variants = [(8, 8, 16); (16, 16, 40); (30, 16, 99)]
@@ -88,7 +97,10 @@ let main argv =
     
     let variant = choose_game_variant
     let board = generate_board variant
+    let user_board = Array2D.create<char> (Array2D.length1 board) (Array2D.length2 board) 'c'
 
-    print_table board
+    print_mines_table board
+    printfn "*\t"
+    print_user_table user_board
 
     0 // return an integer exit code
